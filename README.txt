@@ -15,5 +15,6 @@ Please provide the following:
 ##############################
 
 Steps:
-1) create new dotnet blazor standalone application
+1) create new dotnet blazor standalone application (.net 10.0) in src/WebApp folder, solution put into src folder
+2) commit changes with message "Result of {step text} {command line called}"
 -----------------
