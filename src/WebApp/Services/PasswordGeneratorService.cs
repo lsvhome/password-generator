@@ -60,7 +60,7 @@ public class PasswordGeneratorService
             return string.Empty;
         }
 
-        length = Math.Clamp(length, 4, 32);
+        length = Math.Clamp(length, 4, 128);
 
         var key = Encoding.UTF8.GetBytes(masterPassword);
         var message = Encoding.UTF8.GetBytes(hostname);
