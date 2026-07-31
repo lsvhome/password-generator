@@ -6,12 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
-    <!-- CA1416 flags Aes/HMAC* as unsupported on browser, but these are pure-managed
-         implementations that work correctly under the Blazor WebAssembly runtime. -->
+    <!-- CA1416: HMACMD5 is flagged as unsupported on browser-wasm (unlike the SHA-family
+         HMAC classes, which do work). Left as-is pending a decision on the MD5 option. -->
     <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor.SubtleCrypto" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.9" PrivateAssets="all" />
   </ItemGroup>

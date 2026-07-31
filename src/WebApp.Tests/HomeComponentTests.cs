@@ -18,7 +18,7 @@ public class HomeComponentTests : BunitContext
     {
         JSInterop.Mode = JSRuntimeMode.Loose;
         Services.AddSingleton(new PasswordGeneratorService());
-        Services.AddSingleton(sp => new MasterPasswordProtector(JSInterop.JSRuntime));
+        Services.AddSingleton(sp => new MasterPasswordProtector(new FakeCryptoService(), JSInterop.JSRuntime));
     }
 
     [Fact]
