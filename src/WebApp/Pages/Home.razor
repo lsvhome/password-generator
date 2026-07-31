@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Forms
 @using WebApp.Services
 @inject IJSRuntime JS
 @inject PasswordGeneratorService Generator
@@ -20,12 +21,10 @@
 
 <div class="mb-3">
     <label for="length" class="form-label">Password length</label>
-    <select id="length" class="form-select" @bind="PasswordLength" @bind:after="Recalculate">
-        @for (var i = 4; i <= 32; i++)
-        {
-            <option value="@i">@i</option>
-        }
-    </select>
+    <CascadingValue Value="_lengthEditContext">
+        <InputNumber id="length" class="form-control" style="width: 8rem;" min="4" max="32" step="1"
+                     @bind-Value="PasswordLength" @bind-Value:after="Recalculate" />
+    </CascadingValue>
 </div>
 
 <div class="mb-3">

@@ -66,6 +66,31 @@ public class HomeComponentTests : BunitContext
     }
 
     [Fact]
+    public void LengthInput_IsRenderedAsNumberInputWithMinMaxBounds()
+    {
+        var cut = Render<Home>();
+
+        var lengthInput = cut.Find("#length");
+        Assert.Equal("number", lengthInput.GetAttribute("type"));
+        Assert.Equal("4", lengthInput.GetAttribute("min"));
+        Assert.Equal("32", lengthInput.GetAttribute("max"));
+        Assert.Equal("16", lengthInput.GetAttribute("value"));
+    }
+
+    [Fact]
+    public void ChangingLengthInput_RegeneratesPasswordWithNewLength()
+    {
+        var cut = Render<Home>();
+        cut.Find("#masterPassword").Input("mymasterpassword");
+        cut.Find("#siteUrl").Input("https://example.com");
+
+        cut.Find("#length").Change("24");
+
+        var passwordInput = cut.Find("#generatedPassword");
+        Assert.Equal(24, passwordInput.GetAttribute("value")!.Length);
+    }
+
+    [Fact]
     public void MasterPasswordInput_StripsNonAlphanumericCharacters()
     {
         var cut = Render<Home>();

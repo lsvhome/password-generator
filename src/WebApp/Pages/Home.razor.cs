@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
 using WebApp.Services;
 
@@ -8,6 +9,8 @@ namespace WebApp.Pages;
 public partial class Home : ComponentBase
 {
     private static readonly Regex NonAlphanumeric = new("[^a-zA-Z0-9]", RegexOptions.Compiled);
+
+    private readonly EditContext _lengthEditContext;
 
     private PasswordHashAlgorithm SelectedAlgorithm { get; set; } = PasswordHashAlgorithm.SHA256;
     private int PasswordLength { get; set; } = 16;
@@ -25,6 +28,13 @@ public partial class Home : ComponentBase
 
     private string GeneratedPassword { get; set; } = string.Empty;
     private bool JustCopied { get; set; }
+
+    public Home()
+    {
+        // InputNumber requires a cascading EditContext even outside of a full EditForm;
+        // the model reference itself is not used for validation here.
+        _lengthEditContext = new EditContext(this);
+    }
 
     protected override async Task OnInitializedAsync()
     {
