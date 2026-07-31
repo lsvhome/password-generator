@@ -1,7 +1,91 @@
 ﻿@page "/"
+@using WebApp.Services
+@inject IJSRuntime JS
+@inject PasswordGeneratorService Generator
+@inject MasterPasswordProtector Protector
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Password Generator</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Password Generator</h1>
 
-Welcome to your new app.
+<div class="mb-3">
+    <label for="hashAlgo" class="form-label">Hash algorithm</label>
+    <select id="hashAlgo" class="form-select" @bind="SelectedAlgorithm" @bind:after="Recalculate">
+        @foreach (var algo in Enum.GetValues<PasswordHashAlgorithm>())
+        {
+            <option value="@algo">@algo</option>
+        }
+    </select>
+</div>
+
+<div class="mb-3">
+    <label for="length" class="form-label">Password length</label>
+    <select id="length" class="form-select" @bind="PasswordLength" @bind:after="Recalculate">
+        @for (var i = 4; i <= 32; i++)
+        {
+            <option value="@i">@i</option>
+        }
+    </select>
+</div>
+
+<div class="mb-3">
+    <label class="form-label d-block">Character types</label>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="chkLowercase" @bind="UseLowercase" @bind:after="Recalculate" />
+        <label class="form-check-label" for="chkLowercase">lowercase (abc)</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="chkDigits" @bind="UseDigits" @bind:after="Recalculate" />
+        <label class="form-check-label" for="chkDigits">digits (123)</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="chkUppercase" @bind="UseUppercase" @bind:after="Recalculate" />
+        <label class="form-check-label" for="chkUppercase">UPPERCASE (ABC)</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="chkSymbols" @bind="UseSymbols" @bind:after="Recalculate" />
+        <label class="form-check-label" for="chkSymbols">symbols (!@@#$)</label>
+    </div>
+    @if (!UseLowercase && !UseDigits && !UseUppercase && !UseSymbols)
+    {
+        <div class="text-danger">Select at least one character type.</div>
+    }
+</div>
+
+<div class="mb-3">
+    <label for="masterPassword" class="form-label">Master password</label>
+    <input id="masterPassword" class="form-control" type="password" value="@MasterPassword" @oninput="OnMasterPasswordInput" placeholder="alphanumeric only" />
+</div>
+
+<div class="mb-3 form-check">
+    <input class="form-check-input" type="checkbox" id="chkSave" @bind="SaveMasterPassword" @bind:after="OnSavePreferenceChanged" />
+    <label class="form-check-label" for="chkSave">Save master password</label>
+</div>
+
+<div class="mb-3">
+    <label for="siteUrl" class="form-label">Site URL</label>
+    <input id="siteUrl" class="form-control" value="@SiteUrl" @oninput="OnSiteUrlInput" placeholder="https://example.com/path" />
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Site host name</label>
+    <div class="form-control-plaintext fw-bold">@SiteHostname</div>
+    @if (!string.IsNullOrEmpty(SiteUrl) && string.IsNullOrEmpty(SiteHostname))
+    {
+        <div class="text-danger">Invalid site URL.</div>
+    }
+</div>
+
+<div class="mb-3">
+    <label for="generatedPassword" class="form-label">Generated password</label>
+    <div class="input-group">
+        <input id="generatedPassword" class="form-control" readonly value="@GeneratedPassword" />
+        <button class="btn btn-outline-secondary" type="button" @onclick="CopyToClipboard" disabled="@string.IsNullOrEmpty(GeneratedPassword)">
+            Copy
+            @if (JustCopied)
+            {
+                <span class="text-success ms-1">&#10003;</span>
+            }
+        </button>
+    </div>
+</div>
