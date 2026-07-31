@@ -22,7 +22,7 @@
 <div class="mb-3">
     <label for="length" class="form-label">Password length</label>
     <CascadingValue Value="_lengthEditContext">
-        <InputNumber id="length" class="form-control" style="width: 8rem;" min="4" max="32" step="1"
+        <InputNumber id="length" class="form-control" style="width: 8rem;" min="4" max="128" step="1"
                      @bind-Value="PasswordLength" @bind-Value:after="Recalculate" />
     </CascadingValue>
 </div>

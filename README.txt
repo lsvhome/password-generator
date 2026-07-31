@@ -5,7 +5,7 @@ Please provide plan for software developer of the following:
 2. Single page should contain:
 
 hash algorithm dropdown
-password length dropdown from 4 to 32 with default 16
+password length dropdown from 4 to 128 with default 16
 symbol types grouped checkboxes:
 lowercase characters
 digits
